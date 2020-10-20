@@ -52,7 +52,6 @@ userRouter.get('/login', async(req,res)=>{
         // payload data
     {
         username: user.username,
-        password: validPassword,
         id: user._id
     },
     process.env.TOKEN_SECRET,{expiresIn: "12 h"}

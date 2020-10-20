@@ -28,8 +28,8 @@ roomRouter.post('/pesan-ruang', async (req, res) => {
     res.status(201).json(createdRoom);
 
   }
-  catch(error){
-      res.status(500).json({ error: error})
+  catch(err){
+      res.status(500).json({ error: err})
   }
 })
 
