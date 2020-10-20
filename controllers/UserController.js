@@ -9,7 +9,7 @@ const userRouter = express.Router();
 
 //@desc add new user
 //@route POST/api/user/add
-userRouter.post('/add', async (req, res) => {
+userRouter.post('/register', async (req, res) => {
     try{
         const{
             nama,
@@ -40,58 +40,50 @@ userRouter.post('/add', async (req, res) => {
         res.status(500).json({ error: error})
     }
 })
-
-// userRouter.post('/register', async (req, res) => {
-//     try{
-//         var hashedPassword = bcrypt.hashSync(req.body.password, 8);
-
-//         User.create({
-//             nama : req.body.nama,
-//             username : req.body.username,
-//             id_karyawan : req.body.id_karyawan,
-//             divisi : req.body.divisi,
-//             password : hashedPassword
-//         },
-//             function (err, user) {
-//                 console.log(err)
-//             if (err) return res.status(500).send("There was a problem registering the user.")
-//             res.status(200).send(`${user} Berhasil Daftar`);
-//             }); 
-//     } 
-//     catch(error){
-//         res.status(500).json({ error: error})
-//     }
-// })
-
-
-//@desc Get all user
-//@route GET/api/user/get
-userRouter.get('/get', async (req, res) => {
-    const users = await User.find({})
-  
-    if(users) {
-      res.json(users)
-    } else {
-      res.status(404).json({
-        message: 'User not found'
-      })
+userRouter.get('/login', async(req,res)=>{
+ 
+  const user = await User.findOne({username : req.body.username})
+  console.log(user)
+  if (!user) return res.status(400).json({ error: "Username is wrong" })
+    const validPassword = await bcrypt.compare(req.body.password, user.password)
+    if (!validPassword)
+    return res.status(400).json({ error: "Password is wrong" })
+    const token = jwt.sign(
+        // payload data
+    {
+        username: user.username,
+        password: validPassword,
+        id: user._id
+    },
+    process.env.TOKEN_SECRET,{expiresIn: "12 h"}
+    )
+    res.status(200).json({
+    error: null,
+    data: {
+        token
     }
-  })
-  
+    })
+})
 
-//@desc Get a user by ID
-//@route GET/api/user/get/:id
-userRouter.get('/get/:id', async (req, res) => {
-    const user = await User.findById(req.params.id)
+userRouter.get('/logout', async(req,res)=>{
+  const token = null
+  res.status(200).send({ auth: false, token: token });
+//   //remove token 
+//   const token = jwt.expiresIn(
+//     // payload data
+// {
+//     username: user.username,
+//     password: validPassword,
+//     id: user._id
+// },process.env.TOKEN_SECRET,{expiresIn: "12 h"})
 
-    if(user) {
-      res.json(user)
-    } else {
-      res.status(404).json({
-        message: 'User not found'
-      })
-    }
-  })
+// res.status(200).json({
+//   error: null,
+//   data: {
+//       token
+//   }
+})
+
 
 
 export default userRouter;

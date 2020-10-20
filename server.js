@@ -4,6 +4,7 @@ dotenv.config()
 import express from 'express'
 import mongoose from 'mongoose'
 import morgan from 'morgan'
+import roomRouter from './controllers/RoomController.js'
 import userRouter from './controllers/UserController.js'
 // import router from './router.js'
 
@@ -31,8 +32,9 @@ app.get('/', (req, res, next) => {
 
 // app.use('/api', router)
 app.use('/api/user', userRouter)
+app.use('/api/room', roomRouter)
 
-
-app.listen(process.env.PORT, () => {
-  console.log(`App listens to port ${process.env.PORT}`);
+var port = process.env.PORT || 3000;
+app.listen(port, () => {
+  console.log(`App listens to port ${port}`);
 })
