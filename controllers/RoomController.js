@@ -1,4 +1,9 @@
-userRouter.post('/pesan-ruang', async (req, res) => {
+import Room from './../models/room.js';
+import express from 'express';
+
+const roomRouter = express.Router();
+
+roomRouter.post('/pesan-ruang', async (req, res) => {
   try{
 
       const{
@@ -9,34 +14,23 @@ userRouter.post('/pesan-ruang', async (req, res) => {
           agenda,
           reserved
       } = req.body;
-      
-      const currentUser = await new Promise((resolve, reject) =>{
-          User.find({"username": username}, function(err, user){
-              if(err)
-                  reject(err)
-              resolve(user)
-          })
-      })
-      
-      //cek apakah ada user?
-     if(currentUser[0]){
-          //check password
-          bcrypt.compare(password, currentUser[0].password).then(function(result) {
-              if(result){
-                  //urus token disini
-                  
-                  res.status(201).json({"status":"logged in!"});
-              }
-              else
-                  res.status(201).json({"status":"wrong password."});
-          });
-      }
-      else{
-          res.status(201).json({"status":"username not found"});
-      }
+
+      const newRecord = new Room({
+        "room_number":room_number,
+        "capacity":capacity,
+        "start_date":start_date,
+        "exp_date":exp_date,
+        "agenda": agenda,
+        "reserved": reserved
+    });
+
+    const createdRoom = await newRecord.save();
+    res.status(201).json(createdRoom);
 
   }
-  catch(error){
-      res.status(500).json({ error: error})
+  catch(err){
+      res.status(500).json({ error: err})
   }
 })
+
+export default roomRouter;
