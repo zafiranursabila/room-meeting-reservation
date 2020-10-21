@@ -5,23 +5,21 @@ const roomRouter = express.Router();
 
 roomRouter.post('/pesan-ruang', async (req, res) => {
   try{
-
       const{
           room_number,
           capacity,
           start_date,
           exp_date,
           agenda,
-          reserved
+          reserved,
       } = req.body;
-
       const newRecord = new Room({
         "room_number":room_number,
         "capacity":capacity,
         "start_date":start_date,
         "exp_date":exp_date,
         "agenda": agenda,
-        "reserved": reserved
+        "reserved":reserved
     });
 
     const createdRoom = await newRecord.save();

@@ -22,10 +22,10 @@ const userSchema = mongoose.Schema(
       type: String,
       required:true
     },
-    reserved: {
-      type: String,
-      required: true
-    }
+    reserved :{
+      type : String,
+      required:false
+    },
   },
   {
     timestamps: true,

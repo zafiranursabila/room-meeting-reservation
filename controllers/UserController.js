@@ -32,6 +32,20 @@ userRouter.post('/register', async (req, res) => {
         });
 
         const createdUser = await newUser.save();
+        const token = jwt.sign(
+            // payload data
+        {
+            username: user.username,
+            id: user._id
+        },
+        process.env.TOKEN_SECRET,{expiresIn: "2 h"}
+        )
+        res.status(200).json({
+        error: null,
+        data: {
+            token
+        }
+        })
   
         res.status(201).json(createdUser);
 
@@ -67,20 +81,6 @@ userRouter.get('/login', async(req,res)=>{
 userRouter.get('/logout', async(req,res)=>{
   const token = null
   res.status(200).send({ auth: false, token: token });
-//   //remove token 
-//   const token = jwt.expiresIn(
-//     // payload data
-// {
-//     username: user.username,
-//     password: validPassword,
-//     id: user._id
-// },process.env.TOKEN_SECRET,{expiresIn: "12 h"})
-
-// res.status(200).json({
-//   error: null,
-//   data: {
-//       token
-//   }
 })
 
 
