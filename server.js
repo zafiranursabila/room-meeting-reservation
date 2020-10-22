@@ -6,6 +6,7 @@ import mongoose from 'mongoose'
 import morgan from 'morgan'
 import roomRouter from './controllers/RoomController.js'
 import userRouter from './controllers/UserController.js'
+import verifytoken from './auth/validate-token.js'
 // import router from './router.js'
 
 const app = express()
@@ -32,7 +33,7 @@ app.get('/', (req, res, next) => {
 
 // app.use('/api', router)
 app.use('/api/user', userRouter)
-app.use('/api/room', roomRouter)
+app.use('/api/room',verifytoken, roomRouter)
 
 var port = process.env.PORT || 3000;
 app.listen(port, () => {
