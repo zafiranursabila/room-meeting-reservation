@@ -31,4 +31,17 @@ roomRouter.post('/pesan-ruang', async (req, res) => {
   }
 })
 
+roomRouter.get('/list-room', async(req, res) => {
+  const rooms = await User.find({})
+
+  if(rooms) {
+      res.json(rooms)
+  } else {
+      res.status(404).json({
+          message: 'Room not found'
+      })
+  }
+})
+
+
 export default roomRouter;

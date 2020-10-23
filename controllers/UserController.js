@@ -32,22 +32,7 @@ userRouter.post('/register', async (req, res) => {
         });
 
         const createdUser = await newUser.save();
-        const token = jwt.sign(
-            // payload data
-        {
-            username: user.username,
-            id: user._id
-        },
-        process.env.TOKEN_SECRET,{expiresIn: "2 h"}
-        )
-        res.status(200).json({
-        error: null,
-        data: {
-            token
-        }
-        })
-  
-        res.status(201).json(createdUser);
+        res.status(200).json(createdUser);
 
     }
     catch(error){
@@ -83,6 +68,25 @@ userRouter.get('/logout', async(req,res)=>{
   res.status(200).send({ auth: false, token: token });
 })
 
+// //logout user
+// app.get('/logout',auth,function(req,res){
+//     req.user.deleteToken(req.token,(err,user)=>{
+//         if(err) return res.status(400).send(err);
+//         res.sendStatus(200);
+//     });
 
+// }); 
+
+userRouter.get('/list-user', async(req, res) => {
+    const users = await User.find({})
+
+    if(users) {
+        res.json(users)
+    } else {
+        res.status(404).json({
+            message: 'User not found'
+        })
+    }
+})
 
 export default userRouter;
