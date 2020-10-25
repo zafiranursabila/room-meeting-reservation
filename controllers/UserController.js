@@ -22,23 +22,29 @@ userRouter.post('/register', async (req, res) => {
         //digit angka mau berapa banyak
         var saltRounds = 10;
         const hashedPw = await bcrypt.hash(password, saltRounds);
+        const user = await User.findOne({username})
+        if(user){res.status(400).json({error:"Username sudah digunakan"})
+        console.log("oke")
+        return
+        }
+            const newUser = new User({
+                "nama":nama,
+                "username":username,
+                "id_karyawan":id_karyawan,
+                "divisi":divisi,
+                "password": hashedPw
+            });
 
-        const newUser = new User({
-            "nama":nama,
-            "username":username,
-            "id_karyawan":id_karyawan,
-            "divisi":divisi,
-            "password": hashedPw
-        });
+        const createdUser = await newUser.save();  
+        res.status(201).json(createdUser);
 
-        const createdUser = await newUser.save();
-        res.status(200).json(createdUser);
-
+            
     }
     catch(error){
         res.status(500).json({ error: error})
     }
 })
+
 userRouter.get('/login', async(req,res)=>{
  
   const user = await User.findOne({username : req.body.username})
@@ -68,15 +74,6 @@ userRouter.get('/logout', async(req,res)=>{
   res.status(200).send({ auth: false, token: token });
 })
 
-// //logout user
-// app.get('/logout',auth,function(req,res){
-//     req.user.deleteToken(req.token,(err,user)=>{
-//         if(err) return res.status(400).send(err);
-//         res.sendStatus(200);
-//     });
-
-// }); 
-
 userRouter.get('/list-user', async(req, res) => {
     const users = await User.find({})
 
@@ -88,5 +85,6 @@ userRouter.get('/list-user', async(req, res) => {
         })
     }
 })
+
 
 export default userRouter;

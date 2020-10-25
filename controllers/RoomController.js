@@ -32,7 +32,7 @@ roomRouter.post('/pesan-ruang', async (req, res) => {
 })
 
 roomRouter.get('/list-room', async(req, res) => {
-  const rooms = await User.find({})
+  const rooms = await Room.find({})
 
   if(rooms) {
       res.json(rooms)

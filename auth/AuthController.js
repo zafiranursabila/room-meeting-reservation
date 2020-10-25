@@ -12,7 +12,6 @@ var bcrypt = require('bcryptjs');
 var config = require('../config');
 
 
-
 userRouter.post('/add', function(req, res) {
   
   var hashedPassword = bcrypt.hashSync(req.body.password, 8);
